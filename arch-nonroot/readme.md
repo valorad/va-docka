@@ -10,7 +10,7 @@
 ``` powershell
 # Powershell:
 docker run -it `  
- --name arch-c1
+ --name arch-c1 `
  -e EXEC_USER=$USER -e EXEC_PASSWD=[YOUR PASSWORD] -e EXEC_USER_ID=$UID `
  -v /workspace/workbench:/workspace/workbench `
  -v /workspace/docking:/workspace/docking `
