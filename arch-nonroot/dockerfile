@@ -1,0 +1,25 @@
+## example to build and run
+# docker build . -t arch-nonroot
+
+# docker run -it \  
+#  --name arch-c1
+#  -e EXEC_USER=$USER -e EXEC_PASSWD=[YOUR PASSWORD] -e EXEC_USER_ID=$UID \
+#  -v /workspace/workbench:/workspace/workbench \
+#  -v /workspace/docking:/workspace/docking \
+#  valorad/arch-nonroot
+
+FROM archlinux/base
+
+## Software Installation
+RUN pacman -Syu --noconfirm \ 
+ && pacman -S sudo --noconfirm \
+ && pacman -Scc --noconfirm
+
+VOLUME [ "/workspace/workbench" ]
+VOLUME [ "/workspace/docking" ]
+
+ADD ./index.sh /workspace/
+
+WORKDIR /workspace/workbench
+
+ENTRYPOINT ["/workspace/index.sh"]
