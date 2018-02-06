@@ -13,7 +13,7 @@ docker run -it \
  -v /workspace/downloadCenter:/workspace/docking \
  valorad/fedora-nonroot
 ```
-其中`$USER`换成您的用户名，`[YOUR PASSWORD]`换为您希望设置的密码（如果您的密码包含特殊字符请务必转移，外边加引号） `$UID`为Linux用户ID（一般是1000）
+其中`$USER`换成您的用户名，`[YOUR PASSWORD]`换为您希望设置的密码（如果您的密码包含特殊字符请务必转义，外边加引号） `$UID`为Linux用户ID（一般是1000）
 
 两个`-v`匿名卷挂载（`/workspace/workbench` 和 `/workspace/downloadCenter`）是可选的。
 
