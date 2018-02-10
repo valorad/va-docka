@@ -22,5 +22,5 @@ valorad/nginx-php-mongo
 
 ## exec into container as a non-root user
 ``` bash
-$ docker exec -it nginx-php-mongo-c /workspace/index.sh
+$ docker exec -it nginx-php-mongo-c /workspace/user.sh
 ```

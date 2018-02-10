@@ -7,6 +7,7 @@ RUN apk update \
       autoconf \
       gcc \
       libc-dev \
+      zlib-dev \
       make \
       linux-headers \
 && pecl install mongodb \
@@ -16,6 +17,7 @@ RUN apk update \
       autoconf \
       gcc \
       libc-dev \
+      zlib-dev \
       make \
       linux-headers \
 && rm -rf /var/cache/apk/*
@@ -24,7 +26,6 @@ RUN apk update \
 RUN apk update \
  && apk add --no-cache \
       openssl-dev \
-      zlib-dev \
       nginx \
       sudo \
  && rm -rf /var/cache/apk/* \
@@ -36,7 +37,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
  && php composer-setup.php --install-dir=/usr/bin --filename=composer \
  && php -r "unlink('composer-setup.php');"
 
-ADD ./index.sh /workspace/
+ADD ./workspace/*.sh /workspace/
 ADD ./index.php /workspace/www/default/
 ADD ./conf.d/default.conf /etc/nginx/conf.d/
 
@@ -46,4 +47,4 @@ WORKDIR /workspace
 
 EXPOSE 443 80
 
-ENTRYPOINT ["nginx -g 'pid /tmp/nginx.pid; daemon off;'"]
+ENTRYPOINT ["start-nginx.sh"]
