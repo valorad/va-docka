@@ -13,8 +13,9 @@ docker build -t nginx-php-mongo .
 docker run -d --name nginx-php-mongo-c \
 -p 80:80 \
 -p 443:443 \
+-e EXEC_USER=$USER -e EXEC_USER_ID=$UID \
 -v /path/to/your/sitename.com:/workspace/www/sitename.com \
 -v /path/to/nginx/conf.d:/etc/nginx/conf.d \
 -v /path/to/docking:/workspace/docking \
-nginx-php-mongo
+valorad/nginx-php-mongo
 ```
