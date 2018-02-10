@@ -1,0 +1,33 @@
+FROM php:fpm-alpine
+
+# apk installation
+RUN apk update \
+ && apk add --no-cache \
+      autoconf \
+      gcc \
+      libc-dev \
+      make \
+      openssl-dev \
+      linux-headers \
+      zlib-dev \
+      nginx \
+      su-exec \
+ && rm -rf /var/cache/apk/*
+
+# php mongo extension and composer installation
+RUN pecl install mongodb \
+ && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/ext.ini \
+ && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+ && php composer-setup.php --install-dir=/usr/bin --filename=composer \
+ && php -r "unlink('composer-setup.php');"
+
+ADD ./index.sh /workspace/
+
+VOLUME ["/workspace/www", "/workspace/docking"]
+
+WORKDIR /workspace
+
+EXPOSE 443 80
+
+ENTRYPOINT ["/workspace/index.sh"]
+CMD /bin/sh
