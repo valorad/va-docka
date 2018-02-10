@@ -1,28 +1,44 @@
 FROM php:fpm-alpine
 
-# apk installation
+# php mongo extension 
+# --> dependencies
 RUN apk update \
- && apk add --no-cache \
+&& apk add --no-cache \
       autoconf \
       gcc \
       libc-dev \
       make \
-      openssl-dev \
       linux-headers \
+&& pecl install mongodb \
+&& echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/ext.ini \
+# --> clearings
+&& apk del \
+      autoconf \
+      gcc \
+      libc-dev \
+      make \
+      linux-headers \
+&& rm -rf /var/cache/apk/*
+
+# apk installation
+RUN apk update \
+ && apk add --no-cache \
+      openssl-dev \
       zlib-dev \
       nginx \
-      su-exec \
- && rm -rf /var/cache/apk/*
+      sudo \
+ && rm -rf /var/cache/apk/* \
+ # --> delete default nginx conf
+ && rm /etc/nginx/conf.d/*
 
-# php mongo extension and composer installation
-RUN pecl install mongodb \
- && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/ext.ini \
- && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+# composer installation
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
  && php composer-setup.php --install-dir=/usr/bin --filename=composer \
  && php -r "unlink('composer-setup.php');"
 
 ADD ./index.sh /workspace/
-ADD ./index.php /workspace/www
+ADD ./index.php /workspace/www/default/
+ADD ./conf.d/default.conf /etc/nginx/conf.d/
 
 VOLUME ["/workspace/www", "/workspace/docking"]
 
@@ -30,5 +46,4 @@ WORKDIR /workspace
 
 EXPOSE 443 80
 
-ENTRYPOINT ["/workspace/index.sh"]
-CMD /bin/sh
+ENTRYPOINT ["nginx -g 'pid /tmp/nginx.pid; daemon off;'"]
