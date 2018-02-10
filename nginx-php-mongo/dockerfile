@@ -22,6 +22,7 @@ RUN pecl install mongodb \
  && php -r "unlink('composer-setup.php');"
 
 ADD ./index.sh /workspace/
+ADD ./index.php /workspace/www
 
 VOLUME ["/workspace/www", "/workspace/docking"]
 
