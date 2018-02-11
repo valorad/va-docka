@@ -5,8 +5,8 @@ LABEL maintainer="valorad <xmj-alliance@wcnexus.com>"
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 
-# php mongo extension install and php-fpm configs
-# --> mongodb build dependencies
+# php extensions compilation and php-fpm configs
+# --> build mongodb driver
 RUN apk update \
 && apk add --no-cache \
       autoconf \
@@ -15,10 +15,34 @@ RUN apk update \
       zlib-dev \
       make \
       linux-headers \
+      freetype-dev \
+      libjpeg-turbo-dev \
+      libmcrypt-dev  \
+      libpng-dev \
+      openssl-dev \
+      gd-dev \
 && pecl install mongodb \
 && docker-php-ext-enable mongodb \
 # && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/ext.ini \
+# --> configure gd
+&& docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+# --> installation of PHP core extensions
+&& docker-php-ext-install -j$(nproc) \ 
+      mcrypt \
+      gd \
+      exif \
+      intl \
+      xsl \
+      json \
+      soap \
+      dom \
+      zip \
+      opcache \
+# --> build xdebug
+&& pecl install xdebug \
+&& docker-php-ext-enable xdebug \
 # --> clearings
+&& docker-php-source delete \
 && apk del \
       autoconf \
       gcc \
@@ -26,9 +50,15 @@ RUN apk update \
       zlib-dev \
       make \
       linux-headers \
+      freetype-dev \
+      libjpeg-turbo-dev \
+      libmcrypt-dev  \
+      libpng-dev \
+      openssl-dev \
+      gd-dev \
 && rm -rf /var/cache/apk/* \
 # --> tweak php-fpm config
-&& echo "cgi.fix_pathinfo=0" > ${php_vars} \
+&& echo "cgi.fix_pathinfo=0" >> ${php_vars} \
 && echo "upload_max_filesize = 100M"  >> ${php_vars} \
 && echo "post_max_size = 100M"  >> ${php_vars} \
 && echo "variables_order = \"EGPCS\""  >> ${php_vars} \
@@ -53,9 +83,9 @@ RUN apk update \
 RUN apk update \
  && apk add --no-cache \
       shadow \
-      openssl-dev \
       supervisor \
       nginx \
+      git \
       sudo \
  && rm -rf /var/cache/apk/* \
  # --> delete default nginx conf
