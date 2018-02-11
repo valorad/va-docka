@@ -53,11 +53,18 @@ RUN apk update \
 RUN apk update \
  && apk add --no-cache \
       openssl-dev \
+      supervisor \
       nginx \
       sudo \
  && rm -rf /var/cache/apk/* \
  # --> delete default nginx conf
  && rm /etc/nginx/conf.d/*
+
+# nginx config
+RUN addgroup -S nginx \
+ && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u 12580 nginx \
+ && sed -i "s:/tmp:/var/cache/nginx:" /etc/nginx.conf \
+ && nginx -t
 
 # composer installation
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -66,7 +73,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 ADD ./workspace/*.sh /workspace/
 ADD ./index.php /workspace/www/default/
-ADD ./conf.d/default.conf /etc/nginx/conf.d/
+ADD ./nginx/conf.d/default.conf /etc/nginx/conf.d/
+ADD ./supervisord/supervisord.conf /etc/supervisord.conf
 
 VOLUME ["/workspace/www", "/workspace/docking"]
 
@@ -74,4 +82,4 @@ WORKDIR /workspace
 
 EXPOSE 443 80
 
-ENTRYPOINT ["/workspace/start-nginx.sh"]
+ENTRYPOINT ["/workspace/start.sh"]
