@@ -21,14 +21,15 @@ RUN apk update \
       libpng-dev \
       openssl-dev \
       gd-dev \
+      icu-dev \
+      libxslt-dev \
 && pecl install mongodb \
 && docker-php-ext-enable mongodb \
 # && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/ext.ini \
 # --> configure gd
 && docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 # --> installation of PHP core extensions
-&& docker-php-ext-install -j$(nproc) \ 
-      mcrypt \
+&& docker-php-ext-install \ 
       gd \
       exif \
       intl \
@@ -41,8 +42,11 @@ RUN apk update \
 # --> build xdebug
 && pecl install xdebug \
 && docker-php-ext-enable xdebug \
+# --> composer installation
+&& php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+&& php composer-setup.php --install-dir=/usr/bin --filename=composer \
+&& php -r "unlink('composer-setup.php');" \
 # --> clearings
-&& docker-php-source delete \
 && apk del \
       autoconf \
       gcc \
@@ -56,6 +60,8 @@ RUN apk update \
       libpng-dev \
       openssl-dev \
       gd-dev \
+      icu-dev \
+      libxslt-dev \
 && rm -rf /var/cache/apk/* \
 # --> tweak php-fpm config
 && echo "cgi.fix_pathinfo=0" >> ${php_vars} \
@@ -93,11 +99,6 @@ RUN apk update \
 
 # nginx config
 RUN usermod -d /var/cache/nginx -m -u 12580 nginx
-
-# composer installation
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
- && php composer-setup.php --install-dir=/usr/bin --filename=composer \
- && php -r "unlink('composer-setup.php');"
 
 ADD ./workspace/*.sh /workspace/
 ADD ./index.php /workspace/www/default/
