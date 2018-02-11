@@ -52,6 +52,7 @@ RUN apk update \
 # software installation
 RUN apk update \
  && apk add --no-cache \
+      shadow \
       openssl-dev \
       supervisor \
       nginx \
@@ -62,9 +63,7 @@ RUN apk update \
 
 # nginx config
 RUN addgroup -S nginx \
- && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u 12580 nginx \
- && sed -i "s:/tmp:/var/cache/nginx:" /etc/nginx.conf \
- && nginx -t
+ && usermod -d -m /var/cache/nginx -u 12580 nginx
 
 # composer installation
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
