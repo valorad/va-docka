@@ -1,4 +1,6 @@
 # nginx-php-mongo
+[![Docker Pulls](https://img.shields.io/docker/pulls/valorad/nginx-php-mongo.svg?style=flat-square)](https://hub.docker.com/r/valorad/nginx-php-mongo/)
+
 nginx-php-mongo based on php:fpm-alpine
 
 ## build

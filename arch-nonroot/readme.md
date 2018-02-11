@@ -1,5 +1,5 @@
 # arch-nonroot
-[![Docker Stars](https://img.shields.io/docker/stars/valorad/arch-nonroot.svg?style=flat-square)](https://hub.docker.com/r/valorad/arch-nonroot/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/valorad/arch-nonroot.svg?style=flat-square)](https://hub.docker.com/r/valorad/arch-nonroot/)
 
 以非root用户运行的Arch Linux，基于Arch Linux官方镜像制作。
 

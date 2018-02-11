@@ -62,8 +62,7 @@ RUN apk update \
  && rm /etc/nginx/conf.d/*
 
 # nginx config
-RUN addgroup -S nginx \
- && usermod -d -m /var/cache/nginx -u 12580 nginx
+RUN usermod -d /var/cache/nginx -m -u 12580 nginx
 
 # composer installation
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
