@@ -44,21 +44,13 @@ RUN apk update \
 && docker-php-ext-enable mongodb \
 # && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/ext.ini \
 # --> clearings
+&& docker-php-source delete \
 && apk del \
       autoconf \
       gcc \
       libc-dev \
-      zlib-dev \
       make \
       linux-headers \
-      freetype-dev \
-      libjpeg-turbo-dev \
-      libmcrypt-dev  \
-      libpng-dev \
-      openssl-dev \
-      gd-dev \
-      icu-dev \
-      libxslt-dev \
 && rm -rf /var/cache/apk/* \
 # --> tweak php-fpm config
 && echo "cgi.fix_pathinfo=0" >> ${php_vars} \
