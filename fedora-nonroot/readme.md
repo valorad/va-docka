@@ -1,4 +1,4 @@
-# arch-nonroot
+# fedora-nonroot
 [![Docker Pulls](https://img.shields.io/docker/pulls/valorad/fedora-nonroot.svg?style=flat-square)](https://hub.docker.com/r/valorad/fedora-nonroot/)
 
 基于Fedora官方镜像制作，以非root用户运行。已经开启了rpmfusion源。
