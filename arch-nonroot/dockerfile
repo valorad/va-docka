@@ -1,19 +1,27 @@
-## example to build and run
-# docker build . -t arch-nonroot
-
-# docker run -it \  
-#  --name arch-c1
-#  -e EXEC_USER=$USER -e EXEC_PASSWD=[YOUR PASSWORD] -e EXEC_USER_ID=$UID \
-#  -v /workspace/workbench:/workspace/workbench \
-#  -v /workspace/docking:/workspace/docking \
-#  valorad/arch-nonroot
-
 FROM archlinux/base
+
+ENV container docker
 
 ## Software Installation
 RUN pacman -Syu --noconfirm \ 
  && pacman -S sudo --noconfirm \
  && pacman -Scc --noconfirm
+
+# systemd setup
+# --> clean uneeded services
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*; \
+# switch default target from graphical to multi-user
+&& systemctl set-default multi-user.target 
+
+# systemd inside a container
+VOLUME [ "/sys/fs/cgroup" ]
 
 VOLUME [ "/workspace/workbench" ]
 VOLUME [ "/workspace/docking" ]
@@ -22,4 +30,4 @@ ADD ./index.sh /workspace/
 
 WORKDIR /workspace/workbench
 
-ENTRYPOINT ["/workspace/index.sh"]
+ENTRYPOINT ["/workspace/shell.sh"]
