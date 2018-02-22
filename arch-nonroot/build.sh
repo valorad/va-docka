@@ -28,18 +28,18 @@
 set -e
 
 hash docker &>/dev/null || {
-    echo "Could not find dcoker. Uh oh are you serious? Run pacman -S docker"
-    exit 1
+  echo "Could not find dcoker. Uh oh are you serious? Run pacman -S docker"
+  exit 1
 }
 
 hash pacstrap &>/dev/null || {
-    echo "Could not find pacstrap. Run pacman -S arch-install-scripts"
-    exit 1
+  echo "Could not find pacstrap. Run pacman -S arch-install-scripts"
+  exit 1
 }
 
 hash expect &>/dev/null || {
-    echo "Could not find expect. Run pacman -S expect"
-    exit 1
+  echo "Could not find expect. Run pacman -S expect"
+  exit 1
 }
 
 DATE=$(date +"%Y.%m.%d")
@@ -51,26 +51,24 @@ chmod 755 $ROOTFS
 
 # packages to ignore for space savings
 PKGIGNORE=(
-    cryptsetup
-    device-mapper
-    dhcpcd
-    groff
-    iproute2
-    jfsutils
-    linux
-    lvm2
-    man-db
-    man-pages
-    mdadm
-    nano
-    netctl
-    openresolv
-    pciutils
-    pcmciautils
-    reiserfsprogs
-    s-nail
-    usbutils
-    xfsprogs
+  dhcpcd
+  groff
+  iproute2
+  jfsutils
+  linux
+  lvm2
+  man-db
+  man-pages
+  mdadm
+  nano
+  netctl
+  openresolv
+  pciutils
+  pcmciautils
+  reiserfsprogs
+  s-nail
+  usbutils
+  xfsprogs
 )
 IFS=','
 PKGIGNORE="${PKGIGNORE[*]}"
@@ -147,4 +145,4 @@ docker run -t --rm archtest echo Success.
 docker rmi archtest
 
 echo "Approving filesystem..."
-mv $UNTEST arch-rootfs-${DATE}.tar.xz
+mv $UNTEST ./dist/arch-rootfs-${DATE}.tar.xz
