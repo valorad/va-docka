@@ -1,0 +1,8 @@
+---
+
+bind-addr: 0.0.0.0:8848
+auth: password
+password: 89b833347cdca8e19d55f8e3
+cert: false
+user-data-dir: /workspace/www/code-server
+home: /workshop
