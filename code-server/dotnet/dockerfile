@@ -1,0 +1,36 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim
+
+ARG SV_CONFIG_DIR=/etc/codeServer
+ARG BASE_DIR=/workspace/www/code-server
+
+ENV EXEC_USER_NAME=dotnet
+ENV EXEC_PASSWD=please_change
+ENV EXEC_USER_ID=1000
+
+COPY common/config.yaml ${SV_CONFIG_DIR}/
+COPY common/settings.json ${BASE_DIR}/User/
+COPY common/entry-sudo.sh /boot/entry.sh
+
+WORKDIR ${BASE_DIR}/
+
+# Install node + code-server
+RUN apt update \
+    && apt install -y sudo curl git \
+    && curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt install -y nodejs \
+    && curl -fsSL https://code-server.dev/install.sh | sh \
+    && apt clean
+
+# Install needed extensions
+RUN code-server --config ${SV_CONFIG_DIR}/config.yaml \
+    --install-extension=pkief.material-icon-theme \
+    --install-extension=ms-dotnettools.csharp
+
+# Make sure normal user can write code-server directory if that directory isn't mounted by a volume
+RUN chmod 777 -R ${BASE_DIR}/
+
+VOLUME ${BASE_DIR}
+EXPOSE 8848
+
+ENTRYPOINT ["/boot/entry.sh"]
+CMD ["code-server", "--config", "/etc/codeServer/config.yaml"]

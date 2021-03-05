@@ -1,0 +1,14 @@
+---
+
+version: "3.9"
+services:
+  node:
+    build:
+      context: .
+      dockerfile: ./node/dockerfile
+    image: code-server-node:latest
+  dotnet:
+    build:
+      context: .
+      dockerfile: ./dotnet/dockerfile
+    image: code-server-dotnet:latest

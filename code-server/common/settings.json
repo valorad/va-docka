@@ -1,0 +1,6 @@
+{
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.iconTheme": "material-icon-theme",
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "files.autoSave": "off"
+}
