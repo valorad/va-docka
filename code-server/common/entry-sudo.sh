@@ -19,7 +19,7 @@ if id "$userid" >/dev/null 2>&1; then
 else
   echo "Summoning $username - UID:$userid ..."
   # Add user
-  useradd -m -s /bin/bash -g sudo -u $userid $username
+  useradd -m -s /bin/bash -G sudo -u $userid $username
   # Change password
   echo "$username:$userpasswd" | chpasswd
 fi
