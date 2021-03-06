@@ -36,12 +36,11 @@ docker run -d \
 --network main \
 -p 18848:8848 \
 -v /workspace/www/code-server/config.yaml:/etc/codeServer/config.yaml \
--v /workspace/www/code-server/node/15:/workspace/www/code-server \
 -v /workspace/workbench:/workspace/workbench \
-docker.pkg.github.com/valorad/va-docka/code-server-node:latest
+ghcr.io/valorad/code-server-node:latest
 ```
 
-Change the container image, name, arguments, etc. according to your needs.
+Change the image sufix, tag, container name, arguments, etc. according to your needs.
 
 ## Build
 
