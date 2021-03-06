@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   node-15:
-    image: docker.pkg.github.com/valorad/va-docka/code-server-node:v15-v3
+    image: ghcr.io/valorad/code-server-node:latest # Feel free to choose the tag you want
     container_name: code-server-node-15
     restart: always
     environment:
@@ -11,14 +11,15 @@ services:
       - EXEC_USER_NAME=node2 # (optional) Your new user name if needed.
       - EXEC_PASSWD=my-password-for-new-user # (optional) Your new user password.
     volumes:
-      - /workspace/www/code-server/config.yaml:/etc/codeServer/config.yaml # Path to code-server config file if you are overriding
-      - /workspace/www/code-server/node/15:/workspace/www/code-server # Path to where you store code-server user data (including settings.json) and extensions.
+      - /workspace/www/code-server/config.yaml:/etc/codeServer/config.yaml # Path to code-server config file to override
       - /workspace/workbench:/workspace/workbench # Path to your code that you will edit
+      - /workspace/www/code-server/node/15/User/settings.json:/workspace/www/code-server/User/settings.json # (optional) Path to where you store code-server user settings.
+      - /workspace/www/code-server/node/15/extensions:/workspace/www/code-server/extensions # (optional) Path to where you store code-server extensions.
     networks:
       - main
 
   dotnet-5:
-    image: docker.pkg.github.com/valorad/va-docka/code-server-dotnet:v5-v3
+    image: ghcr.io/valorad/code-server-dotnet:latest # Feel free to choose the tag you want
     container_name: code-server-dotnet-5
     restart: always
     environment:
@@ -26,12 +27,14 @@ services:
       - EXEC_USER_NAME=dotnet2000 # (optional) Your new user name if needed.
       - EXEC_PASSWD=my-password-for-new-user # (optional) Your new user password.
     volumes:
-      - /workspace/www/code-server/config.yaml:/etc/codeServer/config.yaml # Path to code-server config file if you are overriding
-      - /workspace/www/code-server/dotnet/5:/workspace/www/code-server # Path to where you store code-server user data (including settings.json) and extensions.
+      - /workspace/www/code-server/config.yaml:/etc/codeServer/config.yaml # Path to code-server config file to override
       - /workspace/workbench:/workspace/workbench # Path to your code that you will edit
+      - /workspace/www/code-server/node/15/User/settings.json:/workspace/www/code-server/User/settings.json # (optional) Path to where you store code-server user settings.
+      - /workspace/www/code-server/node/15/extensions:/workspace/www/code-server/extensions # (optional) Path to where you store code-server extensions.
     networks:
       - main
 
+# Remember to create this docker network manually!
 networks:
   main:
     external:
