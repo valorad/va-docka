@@ -1,0 +1,16 @@
+---
+version: "3.9"
+services:
+
+  vlmcsd-latest:
+    image: ghcr.io/valorad/vlmcsd:latest # Feel free to choose the tag you want
+    container_name: vlmcsd-latest
+    restart: always
+    networks:
+      - main
+
+# Remember to create this docker network manually!
+networks:
+  main:
+    external:
+      name: main
