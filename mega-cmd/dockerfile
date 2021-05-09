@@ -11,4 +11,6 @@ RUN apt update \
     && rm ./megacmd_1.4.0-3.1_amd64.deb \
     && apt clean
 
+RUN useradd -m -s /bin/bash -G sudo -u 1000 mega
+
 CMD ["mega-cmd-server"]
