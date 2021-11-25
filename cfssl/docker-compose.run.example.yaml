@@ -1,0 +1,16 @@
+---
+version: "3.9"
+services:
+
+  latest:
+    image: ghcr.io/valorad/cfssl:latest
+    restart: always
+    user: "1000"
+    networks:
+      - main
+
+# Remember to create this docker network manually!
+networks:
+  main:
+    external:
+      name: main
