@@ -6,8 +6,16 @@ services:
     image: ghcr.io/valorad/cfssl:latest
     restart: always
     user: "1000"
+    volumes:
+      - /path/2/caConfigs:/workspace/www/cfssl/configs
+      - /path/2/certstore/db:/workspace/www/cfssl/db
     networks:
       - main
+
+# The caConfigs is the folder containing all the CA configs,
+# including the root CA, the intermediate CA,
+# their keypairs,
+# and all of the end-user entities that you going to create.
 
 # Remember to create this docker network manually!
 networks:

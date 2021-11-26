@@ -1,0 +1,19 @@
+{
+  "CN": "xmj-alliance",
+  "key": {
+    "algo": "ecdsa",
+    "size": 256
+  },
+    "names": [
+       {
+         "C": "NA",
+         "L": "Zinia",
+         "O": "Xiaomajia Alliance",
+         "OU": "CA Services",
+         "ST": "TD"
+       }
+    ],
+  "ca": {
+    "expiry": "35040h"
+  }
+}
