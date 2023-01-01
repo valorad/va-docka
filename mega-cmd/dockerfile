@@ -1,7 +1,7 @@
 FROM debian:11-slim
 
 ARG BASE_DIR=/workspace/www/mega-cmd
-ARG DEB_NAME=megacmd_1.4.0-3.1_amd64.deb
+ARG DEB_NAME=megacmd_1.5.1-1.1_amd64.deb
 
 WORKDIR ${BASE_DIR}/
 
