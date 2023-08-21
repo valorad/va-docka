@@ -5,7 +5,7 @@ services:
   latest:
     image: ghcr.io/valorad/mega-cmd:latest
     restart: always
-    user: "1000"
+    user: "1000:1000"
     volumes:
       - /sync/folder/1:/sync/folder/1
       - /sync/folder/2:/sync/folder/2

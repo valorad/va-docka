@@ -26,7 +26,7 @@ It runs the `mega-cmd-server` when started.
 
 Therefore you need to `docker exec` into your container, and do `mega-login`, `mega-sync`, etc. inside.
 
-Please run the container as the user with UID=1000.
+Please run the container as the user with UID in range 1000 - 1010 inclusive.
 
 Please do NOT run as root. Otherwise, the permissions of your sync folders will all get messed-up!
 

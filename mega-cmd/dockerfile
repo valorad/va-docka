@@ -1,17 +1,19 @@
-FROM debian:11-slim
+FROM debian:12-slim
 
 ARG BASE_DIR=/workspace/www/mega-cmd
-ARG DEB_NAME=megacmd_1.5.1-1.1_amd64.deb
+ARG DEB_NAME=megacmd_1.6.3-3.1_amd64.deb
 
 WORKDIR ${BASE_DIR}/
 
 RUN apt update \
     && apt install -y wget \
-    && wget https://mega.nz/linux/MEGAsync/Debian_11/amd64/${DEB_NAME} \
+    && wget https://mega.nz/linux/repo/Debian_12/amd64/${DEB_NAME} \
     && apt install -y ./${DEB_NAME} \
     && rm ./${DEB_NAME} \
     && apt clean
 
-RUN useradd -m -s /bin/bash -G sudo -u 1000 mega
+RUN groupadd -g 1000 mega \
+ && i=1000 \
+ && while [ $i -le 1010 ]; do useradd -m -s /bin/bash -g mega -G sudo -u $i mega$i && i=$((i+1)); done
 
 CMD ["mega-cmd-server"]
