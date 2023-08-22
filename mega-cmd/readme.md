@@ -30,3 +30,19 @@ Please run the container as the user with UID in range 1000 - 1010 inclusive.
 
 Please do NOT run as root. Otherwise, the permissions of your sync folders will all get messed-up!
 
+### Error Failed to sync folder: Invalid argument
+
+> mega-sync /local/folder /mega/cloud/folder
+> 
+> [API:err: 88:88:88] Failed to sync folder: Invalid argument
+
+According to https://github.com/termux/termux-packages/issues/14097
+
+A work-around is to provide a valid machine ID for the container to use.
+
+- Prepare a machine ID with `dbus-uuidgen` or `systemd-machine-id-setup` in another OS.
+  - you can also grab the existing one from your host machine by reading `/etc/machine-id`
+- Exec into the container as the ROOT user
+- create a new text file at `/etc/machine-id` and fill in your machine ID.
+- retry the sync
+
