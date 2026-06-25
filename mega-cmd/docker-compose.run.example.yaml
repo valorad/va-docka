@@ -1,11 +1,10 @@
 ---
-version: "3.9"
 services:
 
-  latest:
+  main:
     image: ghcr.io/valorad/mega-cmd:latest
-    restart: always
-    user: "1000:1000"
+    restart: unless-stopped
+    user: "1001:1000" # Note: DO NOT run as Root. Otherwise, the permission of sync folders will be messed up.
     volumes:
       - /sync/folder/1:/sync/folder/1
       - /sync/folder/2:/sync/folder/2
