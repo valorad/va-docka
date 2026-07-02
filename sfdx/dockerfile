@@ -1,0 +1,56 @@
+FROM debian:13-slim
+
+ARG DOWNLOAD_URL_NODE=https://nodejs.org/dist/v26.4.0/node-v26.4.0-linux-x64.tar.xz
+ARG DOWNLOAD_URL_JDK=https://download.oracle.com/java/25/latest/jdk-25_linux-x64_bin.tar.gz
+ARG NODE_PACKAGE_SFDX=@salesforce/cli@2.141.6
+ARG APPCENTER_DIR=/workspace/appCenter
+ARG INSTALLATION_PATH_NODE=${APPCENTER_DIR}/nodejs/v26
+ARG INSTALLATION_PATH_JDK=${APPCENTER_DIR}/java/v25
+
+# Install base packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        sudo \
+        curl \
+        ca-certificates \
+        xz-utils \
+        libatomic1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create group sfdx (gid=1000) and users
+RUN groupadd --gid 1000 sfdx \
+    && useradd --uid 1000 --gid 1000 --groups sudo --shell /bin/bash --create-home core \
+    && useradd --uid 1001 --gid 1000 --groups sudo --shell /bin/bash --create-home sfdx
+
+# Install Node.js
+RUN mkdir -p ${INSTALLATION_PATH_NODE} \
+    && curl -fsSL ${DOWNLOAD_URL_NODE} -o /tmp/nodejs.tar.xz \
+    && tar -xJf /tmp/nodejs.tar.xz -C ${INSTALLATION_PATH_NODE} --strip-components=1 \
+    && rm /tmp/nodejs.tar.xz \
+    && chown -R 1000:1000 ${INSTALLATION_PATH_NODE} \
+    && chmod 775 ${INSTALLATION_PATH_NODE}
+
+ENV PATH="${INSTALLATION_PATH_NODE}/bin:${PATH}"
+
+# Install Java JDK
+RUN mkdir -p ${INSTALLATION_PATH_JDK} \
+    && curl -fsSL ${DOWNLOAD_URL_JDK} -o /tmp/jdk.tar.gz \
+    && tar -xzf /tmp/jdk.tar.gz -C ${INSTALLATION_PATH_JDK} --strip-components=1 \
+    && rm /tmp/jdk.tar.gz \
+    && chown -R 1000:1000 ${INSTALLATION_PATH_JDK} \
+    && chmod 775 ${INSTALLATION_PATH_JDK}
+
+ENV PATH="${INSTALLATION_PATH_JDK}/bin:${PATH}"
+ENV JAVA_HOME="${INSTALLATION_PATH_JDK}"
+
+# Install Salesforce CLI
+USER core
+RUN npm install -g ${NODE_PACKAGE_SFDX}
+
+# SF Container ENVs
+ENV SF_CONTAINER_MODE=true
+ENV SFDX_CONTAINER_MODE=true
+ENV DEBIAN_FRONTEND=dialog
+ENV SHELL=/bin/bash
+
+CMD ["bash"]
