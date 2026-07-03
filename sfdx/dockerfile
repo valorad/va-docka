@@ -11,6 +11,7 @@ ARG INSTALLATION_PATH_JDK=${APPCENTER_DIR}/java/v25
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         sudo \
+        git \
         curl \
         ca-certificates \
         xz-utils \
@@ -18,9 +19,11 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Create group sfdx (gid=1000) and users
+# Allow no-password sudo for users in the sudo group
 RUN groupadd --gid 1000 sfdx \
     && useradd --uid 1000 --gid 1000 --groups sudo --shell /bin/bash --create-home core \
-    && useradd --uid 1001 --gid 1000 --groups sudo --shell /bin/bash --create-home sfdx
+    && useradd --uid 1001 --gid 1000 --groups sudo --shell /bin/bash --create-home sfdx \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Install Node.js
 RUN mkdir -p ${INSTALLATION_PATH_NODE} \
@@ -30,8 +33,6 @@ RUN mkdir -p ${INSTALLATION_PATH_NODE} \
     && chown -R 1000:1000 ${INSTALLATION_PATH_NODE} \
     && chmod 775 ${INSTALLATION_PATH_NODE}
 
-ENV PATH="${INSTALLATION_PATH_NODE}/bin:${PATH}"
-
 # Install Java JDK
 RUN mkdir -p ${INSTALLATION_PATH_JDK} \
     && curl -fsSL ${DOWNLOAD_URL_JDK} -o /tmp/jdk.tar.gz \
@@ -40,7 +41,7 @@ RUN mkdir -p ${INSTALLATION_PATH_JDK} \
     && chown -R 1000:1000 ${INSTALLATION_PATH_JDK} \
     && chmod 775 ${INSTALLATION_PATH_JDK}
 
-ENV PATH="${INSTALLATION_PATH_JDK}/bin:${PATH}"
+ENV PATH="${INSTALLATION_PATH_NODE}/bin:${INSTALLATION_PATH_JDK}/bin:${PATH}"
 ENV JAVA_HOME="${INSTALLATION_PATH_JDK}"
 
 # Install Salesforce CLI
