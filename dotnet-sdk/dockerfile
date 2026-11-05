@@ -1,0 +1,56 @@
+FROM debian:13-slim
+
+# Note: Configure these args before building the image
+# DOTNET_CHANNEL: STS, LTS or something like "11.0.1xx" (keep the xx)
+# DOTNET_QUALITY: daily, preview or GA
+ARG DOTNET_CHANNEL=11.0.1xx
+ARG DOTNET_QUALITY=preview
+
+ARG APPCENTER_DIR=/workspace/appCenter
+ARG INSTALLATION_PATH_DOTNET=${APPCENTER_DIR}/dotnet
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		bash \
+		sudo \
+		git \
+		curl \
+		ca-certificates \
+		tar \
+		gzip \
+		libc6 \
+		libgcc-s1 \
+		libstdc++6 \
+		libicu76 \
+		libssl3t64 \
+		libgssapi-krb5-2 \
+		libatomic1 \
+		zlib1g \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid 1000 dotnet \
+	&& useradd --uid 1000 --gid 1000 --groups sudo --shell /bin/bash --create-home core \
+	&& useradd --uid 1001 --gid 1000 --groups sudo --shell /bin/bash --create-home dotnet \
+	&& echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+RUN curl -fsSL https://builds.dotnet.microsoft.com/dotnet/scripts/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
+	&& bash /tmp/dotnet-install.sh \
+		--quality "${DOTNET_QUALITY}" \
+    --channel "${DOTNET_CHANNEL}" \
+		--install-dir "${INSTALLATION_PATH_DOTNET}" \
+		--no-path \
+	&& rm /tmp/dotnet-install.sh \
+	&& chown -R 1000:1000 "${INSTALLATION_PATH_DOTNET}" \
+	&& chmod 775 "${INSTALLATION_PATH_DOTNET}" \
+  && for username in core dotnet; do \
+		printf '%s\n' 'export PATH="$DOTNET_ROOT:$HOME/.dotnet/tools:$PATH"' >> "/home/${username}/.bashrc"; \
+	done
+
+ENV DOTNET_ROOT="${INSTALLATION_PATH_DOTNET}"
+ENV PATH="${DOTNET_ROOT}:${PATH}"
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV SHELL=/bin/bash
+
+USER core
+
+CMD ["bash"]

@@ -1,0 +1,19 @@
+{
+  "name": "dotnet",
+  "image": "ghcr.io/valorad/dotnet-sdk:latest",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit"
+      ],
+      "settings": {
+        "editor.tabSize": 2,
+        "[csharp]": {
+          "editor.maxTokenizationLineLength": 2500,
+          "editor.formatOnType": false,
+          "editor.tabSize": 4
+        }
+      }
+    }
+  }
+}
